@@ -1,25 +1,24 @@
 package com.onoprienko.datastructures.list.implementation;
 
-import com.onoprienko.datastructures.list.List;
+import com.onoprienko.datastructures.list.AbstractList;
 
+import java.util.Iterator;
 import java.util.Objects;
-import java.util.StringJoiner;
 
-public class LinkedList implements List {
-    private Node head;
-    private Node tail;
-    private int size;
+public class LinkedList<T> extends AbstractList<T> {
+    private Node<T> head;
+    private Node<T> tail;
 
     @Override
-    public void add(Object value) {
+    public void add(T value) {
         add(value, size);
     }
 
     @Override
-    public void add(Object value, int index) {
+    public void add(T value, int index) {
         validateIndexForMethodAdd(index, size);
 
-        Node newNode = new Node(value);
+        Node<T> newNode = new Node(value);
         if (size == 0) {
             head = tail = newNode;
         } else if (index == size) {
@@ -31,7 +30,7 @@ public class LinkedList implements List {
             newNode.next = head;
             head = newNode;
         } else {
-            Node current = getNode(index);
+            Node<T> current = getNode(index);
             newNode.next = current;
             newNode.prev = current.prev;
             current.prev.next = newNode;
@@ -40,12 +39,12 @@ public class LinkedList implements List {
     }
 
     @Override
-    public Object remove(int index) {
-        validateIndex(index, size);
+    public T remove(int index) {
+        validateIndex(index);
 
-        Node removedValue = getNode(index);
-        Node nextNode = removedValue.next;
-        Node prevNode = removedValue.prev;
+        Node<T> removedValue = getNode(index);
+        Node<T> nextNode = removedValue.next;
+        Node<T> prevNode = removedValue.prev;
 
 
         if (size == 1) {
@@ -53,7 +52,7 @@ public class LinkedList implements List {
         } else if (index == 0) {
             head = nextNode;
         } else if (index == size - 1) {
-            tail = tail.prev;
+            tail = prevNode;
             prevNode.next = null;
         } else {
             prevNode.next = nextNode;
@@ -63,17 +62,17 @@ public class LinkedList implements List {
         return removedValue.value;
     }
 
-    private Node getNode(int index) {
-        validateIndex(index, size);
+    private Node<T> getNode(int index) {
+        validateIndex(index);
 
         if (index <= size / 2) {
-            Node currentFromHead = head;
+            Node<T>  currentFromHead = head;
             for (int i = 0; i < index; i++) {
                 currentFromHead = currentFromHead.next;
             }
             return currentFromHead;
         } else {
-            Node currentFromTail = tail;
+            Node<T>  currentFromTail = tail;
             for (int i = size - 1; i > index; i--) {
                 currentFromTail = currentFromTail.prev;
 
@@ -83,18 +82,18 @@ public class LinkedList implements List {
     }
 
     @Override
-    public Object get(int index) {
-        validateIndex(index, size);
+    public T get(int index) {
+        validateIndex(index);
 
         return getNode(index).value;
     }
 
     @Override
-    public Object set(Object value, int index) {
-        validateIndex(index, size);
+    public T set(T value, int index) {
+        validateIndex(index);
 
-        Node newNode = getNode(index);
-        Object oldValue = newNode.value;
+        Node<T> newNode = getNode(index);
+        T oldValue = newNode.value;
         newNode.value = value;
         return oldValue;
     }
@@ -106,24 +105,8 @@ public class LinkedList implements List {
     }
 
     @Override
-    public int size() {
-        return size;
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return size == 0;
-    }
-
-    @Override
-    public boolean contains(Object value) {
-        return indexOf(value) >= 0;
-    }
-
-
-    @Override
-    public int indexOf(Object value) {
-        Node current = head;
+    public int indexOf(T value) {
+        Node<T> current = head;
         for (int i = 0; i < size - 1; i++) {
             if (Objects.equals(current.value, value)) {
                 return i;
@@ -134,8 +117,8 @@ public class LinkedList implements List {
     }
 
     @Override
-    public int lastIndexOf(Object value) {
-        Node current = tail;
+    public int lastIndexOf(T value) {
+        Node<T> current = tail;
         for (int i = size - 1; i >= 0; i--) {
             if (Objects.equals(current.value, value)) {
                 return i;
@@ -145,21 +128,53 @@ public class LinkedList implements List {
         return -1;
     }
 
+
     @Override
-    public String toString() {
-        StringJoiner result = new StringJoiner(", ", "[", "]");
-        for (int i = 0; i < size; i++) {
-            result.add(String.valueOf(get(i)));
-        }
-        return result.toString();
+    public Iterator iterator() {
+        return new LinkedListIterator();
     }
 
-    private static class Node {
-        Node next;
-        Node prev;
-        Object value;
+    public class LinkedListIterator<T> implements Iterator<T> {
+        private Node<T> current = (Node<T>) head;
+        private int index = 0;
+        private boolean canRemove;
 
-        public Node(Object value) {
+        @Override
+        public boolean hasNext() {
+            return (index < size);
+        }
+
+        @Override
+        public T next() {
+            T value = current.value;
+            current = current.next;
+            canRemove = true;
+            index++;
+            return value;
+        }
+
+        @Override
+        public void remove() {
+            if (!canRemove) {
+                throw new IllegalStateException("Value already removed!");
+            }
+            if (current == null) {
+                tail = tail.prev;
+                size--;
+            } else {
+                LinkedList.this.remove(index);
+            }
+            canRemove = false;
+            index--;
+        }
+    }
+
+    private static class Node<T> {
+        Node<T> next;
+        Node<T> prev;
+        T value;
+
+        public Node(T value) {
             this.value = value;
         }
     }
