@@ -3,20 +3,24 @@ package com.onoprienko.datastructures.map.implementation;
 import com.onoprienko.datastructures.map.Map;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class HashMap<K, V> implements Map<K, V> {
-    private ArrayList<Entry<K, V>>[] buckets = new ArrayList[16];
+    private static final double LOAD_FACTOR = 0.5;
+    private static final int GROW_FACTOR = 2;
+    private static final int INITIAL_CAPACITY = 16;
+
+    private List<Entry<K, V>>[] buckets;
     private int size;
 
-    private static final double LOAD_FACTOR = 0.5;
-
     public HashMap() {
-        for (int i = 0; i < buckets.length; i++) {
-            buckets[i] = new ArrayList<>();
-        }
+        buckets = new List[INITIAL_CAPACITY];
     }
 
+    public HashMap(int capacity) {
+        buckets = new List[capacity];
+    }
     @Override
     public V put(K key, V value) {
         ensureCapacity();
@@ -28,9 +32,10 @@ public class HashMap<K, V> implements Map<K, V> {
         }
 
         int bucketIndex = getIndex(key);
-        ArrayList<Entry<K, V>> bucket = buckets[bucketIndex];
-
+        buckets[bucketIndex] = buckets[bucketIndex] == null ? new ArrayList<>() : buckets[bucketIndex];
+        List<Entry<K, V>> bucket = buckets[bucketIndex];
         bucket.add(new Entry<>(key, value));
+
         size++;
         return null;
     }
@@ -53,7 +58,7 @@ public class HashMap<K, V> implements Map<K, V> {
             return null;
         }
         int bucketIndex = getIndex(key);
-        ArrayList<Entry<K, V>> bucket = buckets[bucketIndex];
+        List<Entry<K, V>> bucket = buckets[bucketIndex];
         bucket.remove(entry);
         size--;
         return entry.value;
@@ -70,10 +75,7 @@ public class HashMap<K, V> implements Map<K, V> {
     }
 
     private int getIndex(K key, int size) {
-        if (Objects.equals(key, null)) {
-            return 0;
-        }
-        int hashCode = key.hashCode();
+        int hashCode = key == null ? 0 : Math.abs(key.hashCode());
         int index = hashCode % size;
         return index;
     }
@@ -81,31 +83,31 @@ public class HashMap<K, V> implements Map<K, V> {
     private void ensureCapacity() {
         int capacity = buckets.length;
         if (size > (capacity * LOAD_FACTOR)) {
-            ArrayList<Entry<K, V>>[] newBuckets = new ArrayList[capacity * 2];
-            for (int i = 0; i < newBuckets.length; i++) {
-                newBuckets[i] = new ArrayList<>();
+            List<Entry<K, V>>[] newBuckets = new List[capacity * GROW_FACTOR];
+
+            for (List<Entry<K, V>> bucket : buckets) {
+                if (bucket != null) {
+                    for (Entry<K, V> entry : bucket) {
+                        int bucketIndex = getIndex(entry.key, newBuckets.length);
+                        newBuckets[bucketIndex] = new ArrayList<>();
+                        List<Entry<K, V>> newBucket = newBuckets[bucketIndex];
+                        newBucket.add(entry);
+                    }
+                }
             }
-            buckets = relocateEntries(newBuckets);
+            buckets = newBuckets;
         }
     }
 
-    private ArrayList<Entry<K, V>>[] relocateEntries(ArrayList<Entry<K, V>>[] newBuckets) {
-        for (ArrayList<Entry<K, V>> bucket : buckets) {
-            for (Entry<K, V> entry : bucket) {
-                int bucketIndex = getIndex(entry.key, newBuckets.length);
-                ArrayList<Entry<K, V>> newBucket = newBuckets[bucketIndex];
-                newBucket.add(entry);
-            }
-        }
-        return newBuckets;
-    }
 
     private Entry<K, V> getEntry(K key) {
         int bucketIndex = getIndex(key);
-        ArrayList<Entry<K, V>> bucket = buckets[bucketIndex];
-        for (Entry<K, V> entry : bucket) {
-            if (Objects.equals(entry.key, key)) {
-                return entry;
+        List<Entry<K, V>> bucket = buckets[bucketIndex];
+        if (bucket != null) {
+            for (Entry<K, V> entry : bucket) {
+                if (Objects.equals(entry.key, key)) {
+                    return entry;
+                }
             }
         }
         return null;
