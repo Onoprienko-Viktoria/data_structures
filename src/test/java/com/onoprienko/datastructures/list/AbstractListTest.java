@@ -5,7 +5,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-
 import java.util.Iterator;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -39,7 +38,7 @@ public abstract class AbstractListTest {
     void tryToAddWithIndexBiggerSizeReturnsException() {
         //WHEN
         Exception exception = assertThrows(IndexOutOfBoundsException.class, () -> {
-            list.add( "test", 3);
+            list.add("test", 3);
         });
 
         //THEN
@@ -53,7 +52,7 @@ public abstract class AbstractListTest {
         list.add("A");
         //WHEN
         Exception exception = assertThrows(IndexOutOfBoundsException.class, () -> {
-            list.add( "test", -2);
+            list.add("test", -2);
         });
 
         //THEN
@@ -98,7 +97,7 @@ public abstract class AbstractListTest {
 
     @DisplayName("test get element after clear returns exception")
     @Test
-    void getElementAfterClearThrowException(){
+    void getElementAfterClearThrowException() {
         //GIVEN
         list.add("A");
         list.add("A");
@@ -442,7 +441,6 @@ public abstract class AbstractListTest {
     }
 
 
-
     @Test
     @DisplayName("test last index of 'null' return first index of object among duplicates")
     void lastIndexOfReturnFirstIndexOfObject() {
@@ -468,7 +466,6 @@ public abstract class AbstractListTest {
         //THEN
         assertEquals(-1, list.lastIndexOf("T"));
     }
-
 
 
     @DisplayName("test Iterator hasNext return True and next return value")

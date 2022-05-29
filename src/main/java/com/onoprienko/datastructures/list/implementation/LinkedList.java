@@ -66,13 +66,13 @@ public class LinkedList<T> extends AbstractList<T> {
         validateIndex(index);
 
         if (index <= size / 2) {
-            Node<T>  currentFromHead = head;
+            Node<T> currentFromHead = head;
             for (int i = 0; i < index; i++) {
                 currentFromHead = currentFromHead.next;
             }
             return currentFromHead;
         } else {
-            Node<T>  currentFromTail = tail;
+            Node<T> currentFromTail = tail;
             for (int i = size - 1; i > index; i--) {
                 currentFromTail = currentFromTail.prev;
 
