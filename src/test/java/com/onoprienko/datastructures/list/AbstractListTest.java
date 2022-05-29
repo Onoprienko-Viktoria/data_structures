@@ -470,10 +470,30 @@ public abstract class AbstractListTest {
     }
 
 
-    //todo разбить на два метода
-    @DisplayName("test Iterator work correctly and throw Illegal State Exception if try call remove() twice for one element")
+
+    @DisplayName("test Iterator hasNext return True and next return value")
     @Test
-    public void testIterator() {
+    public void iteratorReturnCorrectData() {
+        //GIVEN
+        list.add("A");
+        list.add("B");
+        list.add("C");
+        Iterator<Object> iterator = list.iterator();
+
+        //THEN
+        assertTrue(iterator.hasNext());
+        assertEquals("A", iterator.next());
+        assertTrue(iterator.hasNext());
+        assertEquals("B", iterator.next());
+        assertTrue(iterator.hasNext());
+        assertEquals("C", iterator.next());
+        assertEquals(3, list.size());
+
+    }
+
+    @DisplayName("test iterator remove all values will clear list")
+    @Test
+    public void iteratorRemoveAllValuesWillClearList() {
         //GIVEN
         list.add("A");
         list.add("B");
@@ -483,19 +503,54 @@ public abstract class AbstractListTest {
         //WHEN
         assertTrue(iterator.hasNext());
         assertEquals("A", iterator.next());
+        iterator.remove();
         assertTrue(iterator.hasNext());
         assertEquals("B", iterator.next());
         iterator.remove();
+        assertTrue(iterator.hasNext());
         assertEquals("C", iterator.next());
         iterator.remove();
-        assertEquals(1, list.size());
 
         //THEN
-        IllegalStateException exception = assertThrows(IllegalStateException.class, iterator::remove);
-        assertEquals("Value already removed!", exception.getMessage());
-
-
+        assertEquals(0, list.size());
+        assertTrue(list.isEmpty());
     }
+
+    @DisplayName("test iterator remove one value twice will throw exception")
+    @Test
+    public void iteratorRemoveOneValueTwiceWillThrowException() {
+        //GIVEN
+        list.add("A");
+        Iterator<Object> iterator = list.iterator();
+
+        //WHEN
+        assertTrue(iterator.hasNext());
+        assertEquals("A", iterator.next());
+        iterator.remove();
+        Exception exception = assertThrows(IllegalStateException.class, iterator::remove);
+
+        //THEN
+        assertEquals(0, list.size());
+        assertTrue(list.isEmpty());
+        assertEquals("Value already removed!", exception.getMessage());
+    }
+
+    @DisplayName("test iterator remove from empty list throws exception")
+    @Test
+    public void iteratorRemoveFromEmptyListWillThrowException() {
+        //GIVEN
+        Iterator<Object> iterator = list.iterator();
+
+        //WHEN
+        assertFalse(iterator.hasNext());
+        Exception exception = assertThrows(IllegalStateException.class, iterator::remove);
+
+        //THEN
+        assertEquals(0, list.size());
+        assertTrue(list.isEmpty());
+        assertEquals("Value already removed!", exception.getMessage());
+    }
+
 
     @DisplayName("test list toString")
     @Test
