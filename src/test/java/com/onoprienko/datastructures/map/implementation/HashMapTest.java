@@ -1,7 +1,11 @@
 package com.onoprienko.datastructures.map.implementation;
 
+import com.onoprienko.datastructures.map.implementation.HashMap.Entry;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -144,8 +148,8 @@ class HashMapTest {
 
         //THEN
         assertEquals(2, map.size());
-        assertEquals("A", map.get(null));
         assertEquals("B", map.get("0"));
+        assertEquals("A", map.get(null));
     }
 
     @DisplayName("test get size when add null value with null key will return one")
@@ -303,6 +307,202 @@ class HashMapTest {
         assertEquals(0, map.size());
         assertEquals("AB", removedA);
         assertFalse(map.containsKey("A"));
+    }
+
+    @DisplayName("test Iterator return true on hasNext return next values")
+    @Test
+    public void testIteratorWorkCorrect() {
+        HashMap<String, String> map = new HashMap<>();
+        //GIVEN
+        map.put("A", "A");
+        map.put("B", "B");
+        map.put("C", "C");
+        Iterator<Entry<String, String>> iterator = map.iterator();
+
+        //WHEN
+        assertTrue(iterator.hasNext());
+        Entry next = iterator.next();
+        assertEquals("A", next.getValue());
+
+        assertTrue(iterator.hasNext());
+        next = iterator.next();
+        assertEquals("B", next.getValue());
+
+        assertTrue(iterator.hasNext());
+        next = iterator.next();
+        assertEquals("C", next.getValue());
+    }
+
+    @DisplayName("test Iterator work correct with two values in same cell")
+    @Test
+    public void testIteratorWorkCorrectWithTwoValuesWithSameCell() {
+        //GIVEN
+        map.put("A", "A");
+        map.put(null, "B");
+        map.put("0", "C");
+        map.put("D", "D");
+        Iterator<Entry<String, String>> iterator = map.iterator();
+
+        //THEN
+        assertEquals(4, map.size());
+        assertTrue(iterator.hasNext());
+        Entry next = iterator.next();
+        assertEquals("B", next.getValue());
+
+        assertTrue(iterator.hasNext());
+        next = iterator.next();
+        assertEquals("C", next.getValue());
+
+        assertTrue(iterator.hasNext());
+        next = iterator.next();
+        assertEquals("A", next.getValue());
+
+        assertTrue(iterator.hasNext());
+        next = iterator.next();
+        assertEquals("D", next.getValue());
+    }
+
+
+    @DisplayName("test Iterator work correct with other initial capacity")
+    @Test
+    public void testIteratorWorkCorrectWithOtherInitialCapacity() {
+        //GIVEN
+        HashMap<String, String> map = new HashMap<>(4);
+        map.put("A", "A");
+        map.put("0", "C");
+        map.put("D", "D");
+        Iterator<Entry<String, String>> iterator = map.iterator();
+
+        //THEN
+        assertEquals(3, map.size());
+        assertTrue(iterator.hasNext());
+        Entry next = iterator.next();
+        assertEquals("C", next.getValue());
+        assertEquals("0", next.getKey());
+
+        assertTrue(iterator.hasNext());
+        next = iterator.next();
+        assertEquals("D", next.getValue());
+        assertEquals("D", next.getKey());
+
+        assertTrue(iterator.hasNext());
+        next = iterator.next();
+        assertEquals("A", next.getValue());
+        assertEquals("A", next.getKey());
+    }
+
+    @DisplayName("test iterator remove element change size of map")
+    @Test
+    public void testIteratorRemoveOneValue() {
+        //GIVEN
+        map.put("A", "A");
+        map.put(null, "B");
+        map.put("0", "C");
+        map.put("D", "D");
+        Iterator<Entry<String, String>> iterator = map.iterator();
+
+        //WHEN
+        assertEquals(4, map.size());
+        assertTrue(iterator.hasNext());
+        iterator.next();
+        iterator.remove();
+
+        //THEN
+        assertEquals(3, map.size());
+
+    }
+
+    @DisplayName("test iterator remove element change size of map")
+    @Test
+    public void testIteratorRemoveAllValues() {
+        //GIVEN
+        map.put("A", "A");
+        map.put("0", "C");
+        map.put("D", "D");
+        assertEquals(3, map.size());
+        Iterator<Entry<String, String>> iterator = map.iterator();
+
+        //WHEN
+        for (int i = 0; i < 3; i++) {
+            assertTrue(iterator.hasNext());
+            iterator.next();
+            iterator.remove();
+        }
+        //THEN
+        assertEquals(0, map.size());
+        assertFalse(map.containsKey("A"));
+        assertFalse(map.containsKey("0"));
+        assertFalse(map.containsKey("C"));
+        assertFalse(iterator.hasNext());
+
+    }
+
+    @DisplayName("test iterator hasNext return false and next return exception on empty map")
+    @Test
+    public void testIteratorHasNextReturnFalseAndNextReturnException() {
+        //GIVEN
+        map.put("A", "A");
+        assertEquals(1, map.size());
+        Iterator<Entry<String, String>> iterator = map.iterator();
+
+        //WHEN
+        iterator.next();
+        iterator.remove();
+        assertThrows(IllegalStateException.class, iterator::remove);
+
+        //THEN
+        assertEquals(0, map.size());
+        assertFalse(iterator.hasNext());
+    }
+
+    @DisplayName("test iterator remove return exception when try remove twice")
+    @Test
+    public void testIteratorRemoveThrowExceptionWhenTryRemoveTwice() {
+        //GIVEN
+        assertEquals(0, map.size());
+        Iterator<Entry<String, String>> iterator = map.iterator();
+
+        //WHEN
+        Exception exception = assertThrows(NoSuchElementException.class, iterator::next);
+
+        //THEN
+        assertEquals(0, map.size());
+        assertEquals("There no next value", exception.getMessage());
+        assertFalse(iterator.hasNext());
+
+    }
+
+    @DisplayName("test iterator remove throw exception when try remove on empty map")
+    @Test
+    public void testIteratorRemoveThrowExceptionWhenTryRemoveOnEmptyMap() {
+        //GIVEN
+        assertEquals(0, map.size());
+        Iterator<Entry<String, String>> iterator = map.iterator();
+
+        //WHEN
+        Exception exceptionNext = assertThrows(NoSuchElementException.class, iterator::next);
+        Exception exceptionRemove = assertThrows(IllegalStateException.class, iterator::remove);
+
+        //THEN
+        assertEquals(0, map.size());
+        assertEquals("There no next value", exceptionNext.getMessage());
+        assertEquals("No element to remove", exceptionRemove.getMessage());
+        assertFalse(iterator.hasNext());
+
+    }
+
+    @DisplayName("test toString")
+    @Test
+    public void testToString() {
+        //GIVEN
+        map.put("A", "A");
+        map.put(null, "B");
+        map.put("0", "C");
+        map.put("D", "D");
+
+        //THEN
+        assertEquals("[Entry{key=null, value=B}, Entry{key=0, value=C}, Entry{key=A, value=A}, Entry{key=D, value=D}]",
+                map.toString());
     }
 
 }

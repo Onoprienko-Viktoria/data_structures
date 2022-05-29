@@ -2,9 +2,7 @@ package com.onoprienko.datastructures.map.implementation;
 
 import com.onoprienko.datastructures.map.Map;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class HashMap<K, V> implements Map<K, V> {
     private static final double LOAD_FACTOR = 0.5;
@@ -21,6 +19,8 @@ public class HashMap<K, V> implements Map<K, V> {
     public HashMap(int capacity) {
         buckets = new List[capacity];
     }
+
+
     @Override
     public V put(K key, V value) {
         ensureCapacity();
@@ -32,7 +32,7 @@ public class HashMap<K, V> implements Map<K, V> {
         }
 
         int bucketIndex = getIndex(key);
-        buckets[bucketIndex] = buckets[bucketIndex] == null ? new ArrayList<>() : buckets[bucketIndex];
+        buckets[bucketIndex] = buckets[bucketIndex] == null ? new ArrayList<>(1) : buckets[bucketIndex];
         List<Entry<K, V>> bucket = buckets[bucketIndex];
         bucket.add(new Entry<>(key, value));
 
@@ -70,12 +70,28 @@ public class HashMap<K, V> implements Map<K, V> {
         return entry != null;
     }
 
+    @Override
+    public String toString() {
+        StringJoiner result = new StringJoiner(", ", "[", "]");
+        for (Entry entry : this) {
+            result.add(String.valueOf(entry));
+        }
+        return result.toString();
+    }
+
+
+    @Override
+    public Iterator<Entry<K, V>> iterator() {
+        return new HashMapIterator();
+    }
+
+
     private int getIndex(K key) {
         return getIndex(key, buckets.length);
     }
 
     private int getIndex(K key, int size) {
-        int hashCode = key == null ? 0 : Math.abs(key.hashCode());
+        int hashCode = key == null ? 0 : Math.abs(key.hashCode() == Integer.MIN_VALUE ? key.hashCode() - 1 : key.hashCode());
         int index = hashCode % size;
         return index;
     }
@@ -84,16 +100,10 @@ public class HashMap<K, V> implements Map<K, V> {
         int capacity = buckets.length;
         if (size > (capacity * LOAD_FACTOR)) {
             List<Entry<K, V>>[] newBuckets = new List[capacity * GROW_FACTOR];
-
-            for (List<Entry<K, V>> bucket : buckets) {
-                if (bucket != null) {
-                    for (Entry<K, V> entry : bucket) {
-                        int bucketIndex = getIndex(entry.key, newBuckets.length);
-                        newBuckets[bucketIndex] = new ArrayList<>();
-                        List<Entry<K, V>> newBucket = newBuckets[bucketIndex];
-                        newBucket.add(entry);
-                    }
-                }
+            for (Entry entry : this) {
+                int bucketIndex = getIndex((K) entry.getKey(), newBuckets.length);
+                newBuckets[bucketIndex] = new ArrayList<>(1);
+                newBuckets[bucketIndex].add(entry);
             }
             buckets = newBuckets;
         }
@@ -113,13 +123,77 @@ public class HashMap<K, V> implements Map<K, V> {
         return null;
     }
 
-    private static class Entry<K, V> {
+    public class HashMapIterator<Entry> implements Iterator<Entry> {
+        private int currentBucket = 0;
+        private Iterator<HashMap.Entry<K, V>> iterator = buckets[currentBucket] == null ? null : buckets[currentBucket].iterator();
+
+        @Override
+        public boolean hasNext() {
+            int length = buckets.length - 1;
+            if (currentBucket >= length) {
+                return false;
+            }
+            if (iterator != null) {
+                if (iterator.hasNext()) {
+                    return true;
+                }
+            }
+            currentBucket++;
+            if (buckets[currentBucket] == null) {
+                while (currentBucket <= length - 1) {
+                    if (buckets[currentBucket] != null) {
+                        break;
+                    }
+                    currentBucket++;
+                }
+            }
+            iterator = buckets[currentBucket] == null ? null : buckets[currentBucket].iterator();
+            return iterator != null;
+        }
+
+        @Override
+        public Entry next() {
+            if (hasNext() && iterator.hasNext()) {
+                return (Entry) iterator.next();
+            } else {
+                throw new NoSuchElementException("There no next value");
+            }
+        }
+
+        @Override
+        public void remove() {
+            if (iterator != null) {
+                iterator.remove();
+                size--;
+            } else {
+                throw new IllegalStateException("No element to remove");
+            }
+        }
+    }
+
+    public static class Entry<K, V> {
         private final K key;
         private V value;
 
         private Entry(K key, V value) {
             this.key = key;
             this.value = value;
+        }
+
+        public V getValue() {
+            return value;
+        }
+
+        public K getKey() {
+            return key;
+        }
+
+        @Override
+        public String toString() {
+            return "Entry{" +
+                    "key=" + key +
+                    ", value=" + value +
+                    '}';
         }
     }
 }
