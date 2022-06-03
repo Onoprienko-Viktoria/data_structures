@@ -1,7 +1,5 @@
-package com.onoprienko.datastructures.list.implementation;
+package com.onoprienko.datastructures.list;
 
-import com.onoprienko.datastructures.list.AbstractListTest;
-import com.onoprienko.datastructures.list.List;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

@@ -6,7 +6,7 @@
 
     <groupId>com.onoprienko</groupId>
     <artifactId>datastructures</artifactId>
-    <version>1.0</version>
+    <version>1.0-SNAPSHOT</version>
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
@@ -19,7 +19,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
 
 
 </project>

@@ -1,6 +1,4 @@
-package com.onoprienko.datastructures.map.implementation;
-
-import com.onoprienko.datastructures.map.Map;
+package com.onoprienko.datastructures.map;
 
 import java.util.*;
 

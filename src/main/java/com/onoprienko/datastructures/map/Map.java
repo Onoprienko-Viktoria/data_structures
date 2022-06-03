@@ -1,7 +1,7 @@
 package com.onoprienko.datastructures.map;
 
 
-import com.onoprienko.datastructures.map.implementation.HashMap.Entry;
+import com.onoprienko.datastructures.map.HashMap.Entry;
 
 import java.util.Iterator;
 

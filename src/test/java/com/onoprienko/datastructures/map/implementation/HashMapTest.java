@@ -1,6 +1,7 @@
 package com.onoprienko.datastructures.map.implementation;
 
-import com.onoprienko.datastructures.map.implementation.HashMap.Entry;
+import com.onoprienko.datastructures.map.HashMap;
+import com.onoprienko.datastructures.map.HashMap.Entry;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

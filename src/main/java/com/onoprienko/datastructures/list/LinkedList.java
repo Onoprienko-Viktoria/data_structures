@@ -1,6 +1,4 @@
-package com.onoprienko.datastructures.list.implementation;
-
-import com.onoprienko.datastructures.list.AbstractList;
+package com.onoprienko.datastructures.list;
 
 import java.util.Iterator;
 import java.util.Objects;
