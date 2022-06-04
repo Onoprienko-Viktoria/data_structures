@@ -1,7 +1,7 @@
 package com.onoprienko.datastructures.map.implementation;
 
+import com.onoprienko.datastructures.map.Map.Entry;
 import com.onoprienko.datastructures.map.HashMap;
-import com.onoprienko.datastructures.map.HashMap.Entry;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -322,7 +322,7 @@ class HashMapTest {
 
         //WHEN
         assertTrue(iterator.hasNext());
-        Entry next = iterator.next();
+        Entry<String, String> next = iterator.next();
         assertEquals("A", next.getValue());
 
         assertTrue(iterator.hasNext());
@@ -347,7 +347,7 @@ class HashMapTest {
         //THEN
         assertEquals(4, map.size());
         assertTrue(iterator.hasNext());
-        Entry next = iterator.next();
+        Entry<String, String> next = iterator.next();
         assertEquals("B", next.getValue());
 
         assertTrue(iterator.hasNext());
@@ -377,7 +377,7 @@ class HashMapTest {
         //THEN
         assertEquals(3, map.size());
         assertTrue(iterator.hasNext());
-        Entry next = iterator.next();
+        Entry<String, String> next = iterator.next();
         assertEquals("C", next.getValue());
         assertEquals("0", next.getKey());
 

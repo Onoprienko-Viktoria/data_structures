@@ -1,11 +1,7 @@
 package com.onoprienko.datastructures.map;
 
 
-import com.onoprienko.datastructures.map.HashMap.Entry;
-
-import java.util.Iterator;
-
-public interface Map<K, V> extends Iterable<Entry<K, V>> {
+public interface Map<K, V> extends Iterable<Map.Entry<K, V>> {
     V put(K key, V value);
 
     V get(K key);
@@ -16,6 +12,12 @@ public interface Map<K, V> extends Iterable<Entry<K, V>> {
 
     int size();
 
-    Iterator iterator();
+    interface Entry<K, V> {
+        K getKey();
+
+        V getValue();
+
+        V setValue(V value);
+    }
 
 }

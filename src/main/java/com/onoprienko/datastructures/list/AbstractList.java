@@ -23,8 +23,8 @@ public abstract class AbstractList<T> implements List<T> {
     @Override
     public String toString() {
         StringJoiner result = new StringJoiner(", ", "[", "]");
-        for (int i = 0; i < size; i++) {
-            result.add(String.valueOf(get(i)));
+        for (T value : this) {
+            result.add(String.valueOf(value));
         }
         return result.toString();
 
@@ -37,7 +37,7 @@ public abstract class AbstractList<T> implements List<T> {
         }
     }
 
-    public void validateIndexForMethodAdd(int index, int size) {
+    public void validateIndexForMethodAdd(int index) {
         if (index > size || index < 0) {
             throw new IndexOutOfBoundsException("Index " + index + " out of bounds for length " + size);
         }

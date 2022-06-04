@@ -14,9 +14,9 @@ public class LinkedList<T> extends AbstractList<T> {
 
     @Override
     public void add(T value, int index) {
-        validateIndexForMethodAdd(index, size);
+        validateIndexForMethodAdd(index);
 
-        Node<T> newNode = new Node(value);
+        Node<T> newNode = new Node<>(value);
         if (size == 0) {
             head = tail = newNode;
         } else if (index == size) {
@@ -128,12 +128,12 @@ public class LinkedList<T> extends AbstractList<T> {
 
 
     @Override
-    public Iterator iterator() {
+    public Iterator<T> iterator() {
         return new LinkedListIterator();
     }
 
-    public class LinkedListIterator<T> implements Iterator<T> {
-        private Node<T> current = (Node<T>) head;
+    public class LinkedListIterator implements Iterator<T> {
+        private Node<T> current = head;
         private int index = 0;
         private boolean canRemove;
 

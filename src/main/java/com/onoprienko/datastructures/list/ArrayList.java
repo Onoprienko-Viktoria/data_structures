@@ -11,6 +11,8 @@ public class ArrayList<T> extends AbstractList<T> {
         this(DEFAULT_INITIAL_CAPACITY);
     }
 
+
+    @SuppressWarnings("unchecked")
     public ArrayList(int initialCapacity) {
         array = (T[]) new Object[initialCapacity];
     }
@@ -22,7 +24,7 @@ public class ArrayList<T> extends AbstractList<T> {
 
     @Override
     public void add(T value, int index) {
-        validateIndexForMethodAdd(index, size);
+        validateIndexForMethodAdd(index);
         ensureCapacity();
         System.arraycopy(array, index, array, index + 1, size - index);
         array[index] = value;
@@ -64,7 +66,7 @@ public class ArrayList<T> extends AbstractList<T> {
 
     @Override
     public int indexOf(Object value) {
-        for (int i = 0; i < size - 1; i++) {
+        for (int i = 0; i < size; i++) {
             if (Objects.equals(value, array[i])) {
                 return i;
             }
@@ -83,9 +85,10 @@ public class ArrayList<T> extends AbstractList<T> {
     }
 
 
+    @SuppressWarnings("unchecked")
     private void ensureCapacity() {
         if (array.length == size) {
-            T[] newArray = (T[]) new Object[(int) ((array.length + 1) * 1.5)];
+            T[] newArray = (T[]) new Object[(array.length * 3 / 2 + 1)];
             System.arraycopy(array, 0, newArray, 0, array.length);
             array = newArray;
         }
@@ -93,12 +96,12 @@ public class ArrayList<T> extends AbstractList<T> {
 
     @Override
     public Iterator<T> iterator() {
-        return new ArrayListIterator<>();
+        return new ArrayListIterator();
     }
 
-    private class ArrayListIterator<T> implements Iterator<T> {
+    private class ArrayListIterator implements Iterator<T> {
         private int index = 0;
-        boolean canRemove;
+        private boolean canRemove;
 
         @Override
         public boolean hasNext() {
@@ -107,7 +110,7 @@ public class ArrayList<T> extends AbstractList<T> {
 
         @Override
         public T next() {
-            T value = (T) array[index];
+            T value = array[index];
             index++;
             canRemove = true;
             return value;
@@ -115,11 +118,12 @@ public class ArrayList<T> extends AbstractList<T> {
 
         @Override
         public void remove() {
-            if (canRemove) {
-                ArrayList.this.remove(index - 1);
-            } else {
+            if (!canRemove) {
                 throw new IllegalStateException("Value already removed!");
+
             }
+
+            ArrayList.this.remove(index - 1);
             canRemove = false;
             index--;
         }
