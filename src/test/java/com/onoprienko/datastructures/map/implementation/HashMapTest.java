@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class HashMapTest {
@@ -114,29 +115,15 @@ class HashMapTest {
     @Test
     void putOverInitialCapacityWillIncreaseItsCapacity() {
         //WHEN
-        for (int i = 0; i < 17; i++) {
+        for (int i = 0; i < 20; i++) {
             map.put(String.valueOf(i), String.valueOf(i));
         }
 
         //THEN
-        assertEquals(17, map.size());
-        assertEquals("0", map.get("0"));
-        assertEquals("1", map.get("1"));
-        assertEquals("2", map.get("2"));
-        assertEquals("3", map.get("3"));
-        assertEquals("4", map.get("4"));
-        assertEquals("5", map.get("5"));
-        assertEquals("6", map.get("6"));
-        assertEquals("7", map.get("7"));
-        assertEquals("8", map.get("8"));
-        assertEquals("9", map.get("9"));
-        assertEquals("10", map.get("10"));
-        assertEquals("11", map.get("11"));
-        assertEquals("12", map.get("12"));
-        assertEquals("13", map.get("13"));
-        assertEquals("14", map.get("14"));
-        assertEquals("15", map.get("15"));
-        assertEquals("16", map.get("16"));
+        for (int i = 0; i < 20; i++){
+            assertEquals(String.valueOf(i), map.get(String.valueOf(i)));
+        }
+        assertEquals(20, map.size());
     }
 
     @DisplayName("test put values with keys 'null' and '0' will not rewrite each  other")
@@ -447,8 +434,10 @@ class HashMapTest {
         Iterator<Entry<String, String>> iterator = map.iterator();
 
         //WHEN
+        assertTrue(iterator.hasNext());
         iterator.next();
         iterator.remove();
+        assertFalse(iterator.hasNext());
         assertThrows(IllegalStateException.class, iterator::remove);
 
         //THEN
@@ -460,15 +449,18 @@ class HashMapTest {
     @Test
     public void testIteratorRemoveThrowExceptionWhenTryRemoveTwice() {
         //GIVEN
-        assertEquals(0, map.size());
+        map.put("A", "A");
         Iterator<Entry<String, String>> iterator = map.iterator();
 
         //WHEN
-        Exception exception = assertThrows(NoSuchElementException.class, iterator::next);
+        assertTrue(iterator.hasNext());
+        iterator.next();
+        iterator.remove();
+        Exception exception = assertThrows(IllegalStateException.class, iterator::remove);
 
         //THEN
         assertEquals(0, map.size());
-        assertEquals("There no next value", exception.getMessage());
+        assertEquals("No values to remove", exception.getMessage());
         assertFalse(iterator.hasNext());
 
     }
@@ -486,8 +478,8 @@ class HashMapTest {
 
         //THEN
         assertEquals(0, map.size());
-        assertEquals("There no next value", exceptionNext.getMessage());
-        assertEquals("No element to remove", exceptionRemove.getMessage());
+        assertEquals("No next value found", exceptionNext.getMessage());
+        assertEquals("No values to remove", exceptionRemove.getMessage());
         assertFalse(iterator.hasNext());
 
     }
@@ -506,4 +498,145 @@ class HashMapTest {
                 map.toString());
     }
 
+
+    @DisplayName("test put 3 entries in the same cell will return size 3")
+    @Test
+    public void testPutInSameCellThreeEntriesWillReturnCorrectSize(){
+        //WHEN
+        map.put( "0", "A");
+        map.put(null, "B");
+        map.put(" ", "C");
+
+        //THEN
+        assertEquals(3, map.size());
+        assertTrue(map.containsKey("0"));
+        assertTrue(map.containsKey(null));
+        assertTrue(map.containsKey(" "));
+
+    }
+
+    @DisplayName("test put 3 entries in the same cell and remove first entry by iterator work correct")
+    @Test
+    public void testPutInSameCellThreeEntriesAndRemoveFirstWorkCorrect(){
+        //GIVEN
+        map.put( "0", "A");
+        map.put(null, "B");
+        map.put(" ", "C");
+
+        //WHEN
+        Iterator<Entry<String, String>> iterator = map.iterator();
+        assertTrue(iterator.hasNext());
+        assertEquals("A", iterator.next().getValue());
+        iterator.remove();
+
+        //THEN
+        assertEquals(2, map.size());
+        assertFalse(map.containsKey("0"));
+        assertTrue(map.containsKey(null));
+        assertTrue(map.containsKey(" "));
+    }
+
+    @DisplayName("test put 3 entries in the same cell and remove second entry by iterator work correct")
+    @Test
+    public void testPutInSameCellThreeEntriesAndRemoveByIteratorSecond(){
+        //GIVEN
+        map.put( "0", "A");
+        map.put(null, "B");
+        map.put(" ", "C");
+
+        //WHEN
+        Iterator<Entry<String, String>> iterator = map.iterator();
+        assertTrue(iterator.hasNext());
+        assertEquals("A", iterator.next().getValue());
+        assertTrue(iterator.hasNext());
+        assertEquals("B", iterator.next().getValue());
+        iterator.remove();
+
+        //THEN
+        assertEquals(2, map.size());
+        assertTrue(map.containsKey("0"));
+        assertFalse(map.containsKey(null));
+        assertTrue(map.containsKey(" "));
+    }
+
+    @DisplayName("test put 3 entries in the same cell and remove last entry by iterator work correct")
+    @Test
+    public void testPutInSameCellThreeEntriesAndRemoveByIteratorLast(){
+        //GIVEN
+        map.put( "0", "A");
+        map.put(null, "B");
+        map.put(" ", "C");
+
+        //WHEN
+        Iterator<Entry<String, String>> iterator = map.iterator();
+        assertTrue(iterator.hasNext());
+        assertEquals("A", iterator.next().getValue());
+        assertTrue(iterator.hasNext());
+        assertEquals("B", iterator.next().getValue());
+        assertTrue(iterator.hasNext());
+        assertEquals("C", iterator.next().getValue());
+        iterator.remove();
+
+        //THEN
+        assertEquals(2, map.size());
+        assertTrue(map.containsKey("0"));
+        assertTrue(map.containsKey(null));
+        assertFalse(map.containsKey(" "));
+
+    }
+
+    @DisplayName("test put 3 entries in the same cell and remove last entry work correct")
+    @Test
+    public void testPutInSameCellThreeEntriesAndRemoveFirst(){
+        //GIVEN
+        map.put( "0", "A");
+        map.put(null, "B");
+        map.put(" ", "C");
+
+        //WHEN
+        assertEquals("A" , map.remove("0"));
+
+        //THEN
+        assertEquals(2, map.size());
+        assertFalse(map.containsKey("0"));
+        assertTrue(map.containsKey(null));
+        assertTrue(map.containsKey(" "));
+
+    }
+
+    @DisplayName("test put 3 entries in the same cell and remove second entry work correct")
+    @Test
+    public void testPutInSameCellThreeEntriesAndRemoveSecond(){
+        //GIVEN
+        map.put( "0", "A");
+        map.put(null, "B");
+        map.put(" ", "C");
+
+        //WHEN
+        assertEquals("B" , map.remove(null));
+
+        //THEN
+        assertEquals(2, map.size());
+        assertTrue(map.containsKey("0"));
+        assertFalse(map.containsKey(null));
+        assertTrue(map.containsKey(" "));
+    }
+
+    @DisplayName("test put 3 entries in the same cell and remove last entry work correct")
+    @Test
+    public void testPutInSameCellThreeEntriesAndRemoveLast(){
+        //GIVEN
+        map.put( "0", "A");
+        map.put(null, "B");
+        map.put(" ", "C");
+
+        //WHEN
+        assertEquals("C" , map.remove(" "));
+
+        //THEN
+        assertEquals(2, map.size());
+        assertTrue(map.containsKey("0"));
+        assertTrue(map.containsKey(null));
+        assertFalse(map.containsKey(" "));
+    }
 }

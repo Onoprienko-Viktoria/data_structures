@@ -18,6 +18,12 @@ public interface Map<K, V> extends Iterable<Map.Entry<K, V>> {
         V getValue();
 
         V setValue(V value);
+
+        Entry<K, V> getNext();
+
+        Entry<K, V> setNext(Entry<K, V> entry);
+
+        int getHash();
     }
 
 }
