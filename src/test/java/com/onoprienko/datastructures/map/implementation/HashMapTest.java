@@ -1,13 +1,12 @@
 package com.onoprienko.datastructures.map.implementation;
 
-import com.onoprienko.datastructures.map.Map.Entry;
 import com.onoprienko.datastructures.map.HashMap;
+import com.onoprienko.datastructures.map.Map.Entry;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -120,7 +119,7 @@ class HashMapTest {
         }
 
         //THEN
-        for (int i = 0; i < 20; i++){
+        for (int i = 0; i < 20; i++) {
             assertEquals(String.valueOf(i), map.get(String.valueOf(i)));
         }
         assertEquals(20, map.size());
@@ -501,9 +500,9 @@ class HashMapTest {
 
     @DisplayName("test put 3 entries in the same cell will return size 3")
     @Test
-    public void testPutInSameCellThreeEntriesWillReturnCorrectSize(){
+    public void testPutInSameCellThreeEntriesWillReturnCorrectSize() {
         //WHEN
-        map.put( "0", "A");
+        map.put("0", "A");
         map.put(null, "B");
         map.put(" ", "C");
 
@@ -517,9 +516,9 @@ class HashMapTest {
 
     @DisplayName("test put 3 entries in the same cell and remove first entry by iterator work correct")
     @Test
-    public void testPutInSameCellThreeEntriesAndRemoveFirstWorkCorrect(){
+    public void testPutInSameCellThreeEntriesAndRemoveFirstWorkCorrect() {
         //GIVEN
-        map.put( "0", "A");
+        map.put("0", "A");
         map.put(null, "B");
         map.put(" ", "C");
 
@@ -538,9 +537,9 @@ class HashMapTest {
 
     @DisplayName("test put 3 entries in the same cell and remove second entry by iterator work correct")
     @Test
-    public void testPutInSameCellThreeEntriesAndRemoveByIteratorSecond(){
+    public void testPutInSameCellThreeEntriesAndRemoveByIteratorSecond() {
         //GIVEN
-        map.put( "0", "A");
+        map.put("0", "A");
         map.put(null, "B");
         map.put(" ", "C");
 
@@ -561,9 +560,9 @@ class HashMapTest {
 
     @DisplayName("test put 3 entries in the same cell and remove last entry by iterator work correct")
     @Test
-    public void testPutInSameCellThreeEntriesAndRemoveByIteratorLast(){
+    public void testPutInSameCellThreeEntriesAndRemoveByIteratorLast() {
         //GIVEN
-        map.put( "0", "A");
+        map.put("0", "A");
         map.put(null, "B");
         map.put(" ", "C");
 
@@ -587,14 +586,14 @@ class HashMapTest {
 
     @DisplayName("test put 3 entries in the same cell and remove last entry work correct")
     @Test
-    public void testPutInSameCellThreeEntriesAndRemoveFirst(){
+    public void testPutInSameCellThreeEntriesAndRemoveFirst() {
         //GIVEN
-        map.put( "0", "A");
+        map.put("0", "A");
         map.put(null, "B");
         map.put(" ", "C");
 
         //WHEN
-        assertEquals("A" , map.remove("0"));
+        assertEquals("A", map.remove("0"));
 
         //THEN
         assertEquals(2, map.size());
@@ -606,14 +605,14 @@ class HashMapTest {
 
     @DisplayName("test put 3 entries in the same cell and remove second entry work correct")
     @Test
-    public void testPutInSameCellThreeEntriesAndRemoveSecond(){
+    public void testPutInSameCellThreeEntriesAndRemoveSecond() {
         //GIVEN
-        map.put( "0", "A");
+        map.put("0", "A");
         map.put(null, "B");
         map.put(" ", "C");
 
         //WHEN
-        assertEquals("B" , map.remove(null));
+        assertEquals("B", map.remove(null));
 
         //THEN
         assertEquals(2, map.size());
@@ -624,14 +623,14 @@ class HashMapTest {
 
     @DisplayName("test put 3 entries in the same cell and remove last entry work correct")
     @Test
-    public void testPutInSameCellThreeEntriesAndRemoveLast(){
+    public void testPutInSameCellThreeEntriesAndRemoveLast() {
         //GIVEN
-        map.put( "0", "A");
+        map.put("0", "A");
         map.put(null, "B");
         map.put(" ", "C");
 
         //WHEN
-        assertEquals("C" , map.remove(" "));
+        assertEquals("C", map.remove(" "));
 
         //THEN
         assertEquals(2, map.size());

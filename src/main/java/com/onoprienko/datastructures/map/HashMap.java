@@ -31,7 +31,7 @@ public class HashMap<K, V> implements Map<K, V> {
         Entry<K, V> currentBucket = buckets[bucketIndex];
 
         if (currentBucket == null) {
-            buckets[bucketIndex] = new HashMapEntry<>(key, value, getHash(key));
+            buckets[bucketIndex] = new HashMapEntry<>(key, value);
             size++;
             return null;
         }
@@ -41,7 +41,7 @@ public class HashMap<K, V> implements Map<K, V> {
                 return currentBucket.setValue(value);
             }
             if (currentBucket.getNext() == null) {
-                currentBucket.setNext(new HashMapEntry<>(key, value, getHash(key)));
+                currentBucket.setNext(new HashMapEntry<>(key, value));
                 break;
             }
             currentBucket = currentBucket.getNext();
@@ -231,15 +231,13 @@ public class HashMap<K, V> implements Map<K, V> {
     }
 
     protected static class HashMapEntry<K, V> implements Entry<K, V> {
-        private final int hash;
         private final K key;
         private V value;
         private Entry<K, V> next;
 
-        private HashMapEntry(K key, V value, int hash) {
+        private HashMapEntry(K key, V value) {
             this.key = key;
             this.value = value;
-            this.hash = hash;
         }
 
         @Override
@@ -271,11 +269,6 @@ public class HashMap<K, V> implements Map<K, V> {
             return key;
         }
 
-        @Override
-        public int getHash() {
-            return hash;
-        }
-
 
         @Override
         public String toString() {
@@ -285,4 +278,6 @@ public class HashMap<K, V> implements Map<K, V> {
                     '}';
         }
     }
+
+
 }

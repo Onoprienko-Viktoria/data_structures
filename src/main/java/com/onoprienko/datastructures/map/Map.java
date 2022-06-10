@@ -23,7 +23,6 @@ public interface Map<K, V> extends Iterable<Map.Entry<K, V>> {
 
         Entry<K, V> setNext(Entry<K, V> entry);
 
-        int getHash();
     }
 
 }
