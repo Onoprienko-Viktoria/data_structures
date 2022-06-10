@@ -9,14 +9,14 @@ import java.util.Iterator;
 import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class AbstractListTest {
-    private List list;
+    private List<Integer> list;
 
     @BeforeEach
     public void before() {
         list = getList();
     }
 
-    protected abstract List getList();
+    protected abstract List<Integer> getList();
 
     @DisplayName("test add null into list dont throw exception")
     @Test
@@ -36,9 +36,7 @@ public abstract class AbstractListTest {
     @Test
     void tryToAddWithIndexBiggerSizeReturnsException() {
         //WHEN
-        Exception exception = assertThrows(IndexOutOfBoundsException.class, () -> {
-            list.add("test", 3);
-        });
+        Exception exception = assertThrows(IndexOutOfBoundsException.class, () -> list.add(3, 3));
 
         //THEN
         assertEquals("Index 3 out of bounds for length 0", exception.getMessage());
@@ -48,11 +46,9 @@ public abstract class AbstractListTest {
     @Test
     void tryToAddWithIndexLessThanZeroReturnsException() {
         //GIVEN
-        list.add("A");
+        list.add(1);
         //WHEN
-        Exception exception = assertThrows(IndexOutOfBoundsException.class, () -> {
-            list.add("test", -2);
-        });
+        Exception exception = assertThrows(IndexOutOfBoundsException.class, () -> list.add(14, -2));
 
         //THEN
         assertEquals("Index -2 out of bounds for length 1", exception.getMessage());
@@ -98,18 +94,13 @@ public abstract class AbstractListTest {
     @Test
     void getElementAfterClearThrowException() {
         //GIVEN
-        list.add("A");
-        list.add("A");
-        list.add("A");
-        list.add("A");
-        list.add("A");
-        list.add("A");
+        list.add(1);
+        list.add(1);
+        list.add(1);
 
         //WHEN
         list.clear();
-        Exception exception = assertThrows(IndexOutOfBoundsException.class, () -> {
-            list.get(0);
-        });
+        Exception exception = assertThrows(IndexOutOfBoundsException.class, () -> list.get(0));
 
         //THEN
         assertEquals("Index 0 out of bounds for length 0", exception.getMessage());
@@ -119,36 +110,36 @@ public abstract class AbstractListTest {
     @Test
     void removeFromTheBeginningOfTheListShiftsTheListAndReturnDeletedValue() {
         //GIVEN
-        list.add("A");
-        list.add("B");
-        list.add("C");
+        list.add(1);
+        list.add(2);
+        list.add(3);
 
         //WHEN
         Object removed = list.remove(0);
         //THEN
         assertEquals(2, list.size());
-        assertEquals("B", list.get(0));
-        assertEquals("C", list.get(1));
-        assertEquals("A", removed);
+        assertEquals(2, list.get(0));
+        assertEquals(3, list.get(1));
+        assertEquals(1, removed);
     }
 
     @DisplayName("test remove from the middle of the list returns deleted value and delete it")
     @Test
     void removeFromMiddleOfTheListShiftsTheListAndReturnDeletedValue() {
         //GIVEN
-        list.add("A");
-        list.add("B");
-        list.add("C");
-        list.add("D");
+        list.add(1);
+        list.add(2);
+        list.add(3);
+        list.add(4);
 
         //WHEN
         Object removed = list.remove(2);
         //THEN
         assertEquals(3, list.size());
-        assertEquals("A", list.get(0));
-        assertEquals("B", list.get(1));
-        assertEquals("D", list.get(2));
-        assertEquals("C", removed);
+        assertEquals(1, list.get(0));
+        assertEquals(2, list.get(1));
+        assertEquals(4, list.get(2));
+        assertEquals(3, removed);
     }
 
 
@@ -156,7 +147,7 @@ public abstract class AbstractListTest {
     @Test
     void removeFromListWithSizeZeroClearListAndReturnDeletedValue() {
         //GIVEN
-        list.add("A");
+        list.add(1);
 
         //WHEN
         Object removed = list.remove(0);
@@ -164,24 +155,24 @@ public abstract class AbstractListTest {
         //THEN
         assertEquals(0, list.size());
         assertTrue(list.isEmpty());
-        assertEquals("A", removed);
+        assertEquals(1, removed);
     }
 
     @DisplayName("test remove from the ending of the list returns deleted value and delete it")
     @Test
     void removeFromTheEndingOfTheListWorkCorrectAndReturnDeletedValue() {
         //GIVEN
-        list.add("A");
-        list.add("B");
-        list.add("C");
+        list.add(1);
+        list.add(2);
+        list.add(3);
 
         //WHEN
         Object removed = list.remove(2);
         //THEN
         assertEquals(2, list.size());
-        assertEquals("A", list.get(0));
-        assertEquals("B", list.get(1));
-        assertEquals("C", removed);
+        assertEquals(1, list.get(0));
+        assertEquals(2, list.get(1));
+        assertEquals(3, removed);
     }
 
     @DisplayName("test remove with index bigger than size returns exception")
@@ -191,9 +182,7 @@ public abstract class AbstractListTest {
         list.add(1);
 
         //WHEN
-        Exception exception = assertThrows(IndexOutOfBoundsException.class, () -> {
-            list.remove(10);
-        });
+        Exception exception = assertThrows(IndexOutOfBoundsException.class, () -> list.remove(10));
 
         //THEN
         assertEquals("Index 10 out of bounds for length 1", exception.getMessage());
@@ -206,9 +195,7 @@ public abstract class AbstractListTest {
         list.add(1);
 
         //WHEN
-        Exception exception = assertThrows(IndexOutOfBoundsException.class, () -> {
-            list.remove(-1);
-        });
+        Exception exception = assertThrows(IndexOutOfBoundsException.class, () -> list.remove(-1));
 
         //THEN
         assertEquals("Index -1 out of bounds for length 1", exception.getMessage());
@@ -222,9 +209,7 @@ public abstract class AbstractListTest {
         list.add(1);
 
         //WHEN
-        Exception exception = assertThrows(IndexOutOfBoundsException.class, () -> {
-            list.get(10);
-        });
+        Exception exception = assertThrows(IndexOutOfBoundsException.class, () -> list.get(10));
 
         //THEN
         assertEquals("Index 10 out of bounds for length 1", exception.getMessage());
@@ -261,9 +246,9 @@ public abstract class AbstractListTest {
 
         //THEN
         assertEquals(3, list.size());
-        assertEquals(null, list.get(0));
-        assertEquals(null, list.get(1));
-        assertEquals(null, list.get(2));
+        assertNull(list.get(0));
+        assertNull(list.get(1));
+        assertNull(list.get(2));
     }
 
     @DisplayName("test set with index bigger than size throw Exception")
@@ -273,9 +258,7 @@ public abstract class AbstractListTest {
         list.add(1);
 
         //WHEN
-        Exception exception = assertThrows(IndexOutOfBoundsException.class, () -> {
-            list.set("h", 121);
-        });
+        Exception exception = assertThrows(IndexOutOfBoundsException.class, () -> list.set(1, 121));
 
         //THEN
         assertEquals("Index 121 out of bounds for length 1", exception.getMessage());
@@ -314,7 +297,7 @@ public abstract class AbstractListTest {
     @Test
     void getSizeOfEmptyListReturnZero() {
         //WHEN
-        List list = new ArrayList();
+        List<Integer> list = new ArrayList<>();
 
         //THEN
         assertEquals(0, list.size());
@@ -339,7 +322,7 @@ public abstract class AbstractListTest {
     @Test
     void isEmptyReturnFalseOnListWithData() {
         //WHEN
-        list.add("O");
+        list.add(1);
 
         //THEN
         assertFalse(list.isEmpty());
@@ -363,33 +346,33 @@ public abstract class AbstractListTest {
     @Test
     void containsReturnTrueIfListContainsObject() {
         //WHEN
-        list.add("test");
+        list.add(1);
         list.add(null);
         list.add(3);
 
         //THEN
         assertEquals(3, list.size());
-        assertTrue(list.contains("test"));
+        assertTrue(list.contains(1));
     }
 
     @DisplayName("test contain return false if list has not object")
     @Test
     void containsReturnFalseIfListNotContainsObject() {
         //WHEN
-        list.add("test");
+        list.add(1);
         list.add(null);
         list.add(3);
 
         //THEN
         assertEquals(3, list.size());
-        assertFalse(list.contains("t"));
+        assertFalse(list.contains(12));
     }
 
     @DisplayName("test index of 'null' return index")
     @Test
     void indexOfWorkWithNull() {
         //WHEN
-        list.add("test");
+        list.add(1);
         list.add(null);
         list.add(3);
 
@@ -402,14 +385,14 @@ public abstract class AbstractListTest {
     @Test
     void indexOfReturnFirstIndexOfObject() {
         //WHEN
-        list.add("test");
-        list.add("test");
+        list.add(1);
+        list.add(1);
         list.add(3);
-        list.add("test");
+        list.add(1);
 
         //THEN
         assertEquals(4, list.size());
-        assertEquals(0, list.indexOf("test"));
+        assertEquals(0, list.indexOf(1));
     }
 
 
@@ -417,12 +400,12 @@ public abstract class AbstractListTest {
     @Test
     public void indexOfReturnsMinusOne() {
         //WHEN
-        list.add("A");
-        list.add("B");
-        list.add("C");
+        list.add(1);
+        list.add(2);
+        list.add(3);
 
         //THEN
-        assertEquals(-1, list.indexOf("T"));
+        assertEquals(-1, list.indexOf(4));
     }
 
 
@@ -430,7 +413,7 @@ public abstract class AbstractListTest {
     @Test
     void lastIndexOfWorkWithNull() {
         //WHEN
-        list.add("test");
+        list.add(1);
         list.add(null);
         list.add(3);
 
@@ -444,26 +427,26 @@ public abstract class AbstractListTest {
     @DisplayName("test last index of 'null' return first index of object among duplicates")
     void lastIndexOfReturnFirstIndexOfObject() {
         //WHEN
-        list.add("test");
-        list.add("test");
+        list.add(1);
+        list.add(1);
         list.add(3);
-        list.add("test");
+        list.add(1);
 
         //THEN
         assertEquals(4, list.size());
-        assertEquals(3, list.lastIndexOf("test"));
+        assertEquals(3, list.lastIndexOf(1));
     }
 
     @DisplayName("test last index of returns '-1'")
     @Test
     public void LastIndexOfReturnsMinusOne() {
         //WHEN
-        list.add("A");
-        list.add("B");
-        list.add("C");
+        list.add(1);
+        list.add(2);
+        list.add(3);
 
         //THEN
-        assertEquals(-1, list.lastIndexOf("T"));
+        assertEquals(-1, list.lastIndexOf(5));
     }
 
 
@@ -471,18 +454,18 @@ public abstract class AbstractListTest {
     @Test
     public void iteratorReturnCorrectData() {
         //GIVEN
-        list.add("A");
-        list.add("B");
-        list.add("C");
-        Iterator<Object> iterator = list.iterator();
+        list.add(1);
+        list.add(2);
+        list.add(3);
+        Iterator<Integer> iterator = list.iterator();
 
         //THEN
         assertTrue(iterator.hasNext());
-        assertEquals("A", iterator.next());
+        assertEquals(1, iterator.next());
         assertTrue(iterator.hasNext());
-        assertEquals("B", iterator.next());
+        assertEquals(2, iterator.next());
         assertTrue(iterator.hasNext());
-        assertEquals("C", iterator.next());
+        assertEquals(3, iterator.next());
         assertEquals(3, list.size());
 
     }
@@ -491,20 +474,20 @@ public abstract class AbstractListTest {
     @Test
     public void iteratorRemoveAllValuesWillClearList() {
         //GIVEN
-        list.add("A");
-        list.add("B");
-        list.add("C");
-        Iterator<Object> iterator = list.iterator();
+        list.add(1);
+        list.add(2);
+        list.add(3);
+        Iterator<Integer> iterator = list.iterator();
 
         //WHEN
         assertTrue(iterator.hasNext());
-        assertEquals("A", iterator.next());
+        assertEquals(1, iterator.next());
         iterator.remove();
         assertTrue(iterator.hasNext());
-        assertEquals("B", iterator.next());
+        assertEquals(2, iterator.next());
         iterator.remove();
         assertTrue(iterator.hasNext());
-        assertEquals("C", iterator.next());
+        assertEquals(3, iterator.next());
         iterator.remove();
 
         //THEN
@@ -516,12 +499,12 @@ public abstract class AbstractListTest {
     @Test
     public void iteratorRemoveOneValueTwiceWillThrowException() {
         //GIVEN
-        list.add("A");
-        Iterator<Object> iterator = list.iterator();
+        list.add(1);
+        Iterator<Integer> iterator = list.iterator();
 
         //WHEN
         assertTrue(iterator.hasNext());
-        assertEquals("A", iterator.next());
+        assertEquals(1, iterator.next());
         iterator.remove();
         Exception exception = assertThrows(IllegalStateException.class, iterator::remove);
 
@@ -535,7 +518,7 @@ public abstract class AbstractListTest {
     @Test
     public void iteratorRemoveFromEmptyListWillThrowException() {
         //GIVEN
-        Iterator<Object> iterator = list.iterator();
+        Iterator<Integer> iterator = list.iterator();
 
         //WHEN
         assertFalse(iterator.hasNext());
@@ -552,12 +535,12 @@ public abstract class AbstractListTest {
     @Test
     void testToStringReturnCorrectStringWithNull() {
         //WHEN
-        list.add("A");
+        list.add(1);
         list.add(null);
-        list.add("B");
-        list.add("C");
+        list.add(2);
+        list.add(3);
 
         //THEN
-        assertEquals("[A, null, B, C]", list.toString());
+        assertEquals("[1, null, 2, 3]", list.toString());
     }
 }
