@@ -17,10 +17,6 @@ public class ArrayList<T> extends AbstractList<T> {
         array = (T[]) new Object[initialCapacity];
     }
 
-    @Override
-    public void add(T value) {
-        add(value, size);
-    }
 
     @Override
     public void add(T value, int index) {
@@ -58,7 +54,7 @@ public class ArrayList<T> extends AbstractList<T> {
 
     @Override
     public void clear() {
-        for (int i = 0; i < size(); i++) {
+        for (int i = 0; i < size; i++) {
             array[i] = null;
         }
         size = 0;

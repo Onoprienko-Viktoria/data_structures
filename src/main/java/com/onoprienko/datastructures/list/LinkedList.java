@@ -1,16 +1,13 @@
 package com.onoprienko.datastructures.list;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 public class LinkedList<T> extends AbstractList<T> {
     private Node<T> head;
     private Node<T> tail;
 
-    @Override
-    public void add(T value) {
-        add(value, size);
-    }
 
     @Override
     public void add(T value, int index) {
@@ -39,17 +36,19 @@ public class LinkedList<T> extends AbstractList<T> {
     @Override
     public T remove(int index) {
         validateIndex(index);
+        return remove(getNode(index));
+    }
 
-        Node<T> removedValue = getNode(index);
-        Node<T> nextNode = removedValue.next;
-        Node<T> prevNode = removedValue.prev;
+    private T remove(Node<T> nodeToRemove) {
+        Node<T> nextNode = nodeToRemove.next;
+        Node<T> prevNode = nodeToRemove.prev;
 
 
         if (size == 1) {
             head = tail = null;
-        } else if (index == 0) {
+        } else if (nodeToRemove == head) {
             head = nextNode;
-        } else if (index == size - 1) {
+        } else if (nodeToRemove == tail) {
             tail = prevNode;
             prevNode.next = null;
         } else {
@@ -57,12 +56,10 @@ public class LinkedList<T> extends AbstractList<T> {
             nextNode.prev = prevNode;
         }
         size--;
-        return removedValue.value;
+        return nodeToRemove.value;
     }
 
     private Node<T> getNode(int index) {
-        validateIndex(index);
-
         if (index <= size / 2) {
             Node<T> currentFromHead = head;
             for (int i = 0; i < index; i++) {
@@ -134,20 +131,21 @@ public class LinkedList<T> extends AbstractList<T> {
 
     public class LinkedListIterator implements Iterator<T> {
         private Node<T> current = head;
-        private int index = 0;
         private boolean canRemove;
 
         @Override
         public boolean hasNext() {
-            return (index < size);
+            return (current != null);
         }
 
         @Override
         public T next() {
+            if (current == null) {
+                throw new NoSuchElementException("No next value to iterate");
+            }
             T value = current.value;
             current = current.next;
             canRemove = true;
-            index++;
             return value;
         }
 
@@ -160,19 +158,18 @@ public class LinkedList<T> extends AbstractList<T> {
                 tail = tail.prev;
                 size--;
             } else {
-                LinkedList.this.remove(index);
+                LinkedList.this.remove(current);
             }
             canRemove = false;
-            index--;
         }
     }
 
     private static class Node<T> {
-        Node<T> next;
-        Node<T> prev;
-        T value;
+        private Node<T> next;
+        private Node<T> prev;
+        private T value;
 
-        public Node(T value) {
+        Node(T value) {
             this.value = value;
         }
     }

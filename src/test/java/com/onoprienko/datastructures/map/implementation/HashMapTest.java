@@ -114,15 +114,15 @@ class HashMapTest {
     @Test
     void putOverInitialCapacityWillIncreaseItsCapacity() {
         //WHEN
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 10100; i++) {
             map.put(String.valueOf(i), String.valueOf(i));
         }
 
         //THEN
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 10100; i++) {
             assertEquals(String.valueOf(i), map.get(String.valueOf(i)));
         }
-        assertEquals(20, map.size());
+        assertEquals(10100, map.size());
     }
 
     @DisplayName("test put values with keys 'null' and '0' will not rewrite each  other")

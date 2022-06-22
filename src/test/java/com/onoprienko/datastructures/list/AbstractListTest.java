@@ -39,7 +39,7 @@ public abstract class AbstractListTest {
         Exception exception = assertThrows(IndexOutOfBoundsException.class, () -> list.add(3, 3));
 
         //THEN
-        assertEquals("Index 3 out of bounds for length 0", exception.getMessage());
+        assertEquals("Index must be between 0 and 0", exception.getMessage());
     }
 
     @DisplayName("test add with index less than zero returns exception")
@@ -51,7 +51,7 @@ public abstract class AbstractListTest {
         Exception exception = assertThrows(IndexOutOfBoundsException.class, () -> list.add(14, -2));
 
         //THEN
-        assertEquals("Index -2 out of bounds for length 1", exception.getMessage());
+        assertEquals("Index must be between 0 and 1", exception.getMessage());
     }
 
     @DisplayName("test add in middle and start of list work correct")
@@ -103,7 +103,7 @@ public abstract class AbstractListTest {
         Exception exception = assertThrows(IndexOutOfBoundsException.class, () -> list.get(0));
 
         //THEN
-        assertEquals("Index 0 out of bounds for length 0", exception.getMessage());
+        assertEquals("Index must be between 0 and 0", exception.getMessage());
     }
 
     @DisplayName("test remove from the beginning of the list returns deleted value and delete it")
@@ -185,7 +185,7 @@ public abstract class AbstractListTest {
         Exception exception = assertThrows(IndexOutOfBoundsException.class, () -> list.remove(10));
 
         //THEN
-        assertEquals("Index 10 out of bounds for length 1", exception.getMessage());
+        assertEquals("Index must be between 0 and 1", exception.getMessage());
     }
 
     @DisplayName("test remove with index less than zero returns exception")
@@ -198,7 +198,7 @@ public abstract class AbstractListTest {
         Exception exception = assertThrows(IndexOutOfBoundsException.class, () -> list.remove(-1));
 
         //THEN
-        assertEquals("Index -1 out of bounds for length 1", exception.getMessage());
+        assertEquals("Index must be between 0 and 1", exception.getMessage());
     }
 
 
@@ -212,7 +212,7 @@ public abstract class AbstractListTest {
         Exception exception = assertThrows(IndexOutOfBoundsException.class, () -> list.get(10));
 
         //THEN
-        assertEquals("Index 10 out of bounds for length 1", exception.getMessage());
+        assertEquals("Index must be between 0 and 1", exception.getMessage());
     }
 
     @DisplayName("test set work correct and set data into list")
@@ -261,7 +261,7 @@ public abstract class AbstractListTest {
         Exception exception = assertThrows(IndexOutOfBoundsException.class, () -> list.set(1, 121));
 
         //THEN
-        assertEquals("Index 121 out of bounds for length 1", exception.getMessage());
+        assertEquals("Index must be between 0 and 1", exception.getMessage());
     }
 
     @DisplayName("test clean list is empty and has size zero")

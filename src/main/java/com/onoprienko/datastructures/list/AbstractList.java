@@ -21,6 +21,11 @@ public abstract class AbstractList<T> implements List<T> {
     }
 
     @Override
+    public void add(T value) {
+        add(value, size);
+    }
+
+    @Override
     public String toString() {
         StringJoiner result = new StringJoiner(", ", "[", "]");
         for (T value : this) {
@@ -30,16 +35,15 @@ public abstract class AbstractList<T> implements List<T> {
 
     }
 
-    public void validateIndex(int index) {
-        int size = this.size();
-        if (index > size - 1 || index < 0) {
-            throw new IndexOutOfBoundsException("Index " + index + " out of bounds for length " + size);
+    protected void validateIndex(int index) {
+        if (index >= size || index < 0) {
+            throw new IndexOutOfBoundsException("Index must be between 0 and " + size);
         }
     }
 
-    public void validateIndexForMethodAdd(int index) {
+    protected void validateIndexForMethodAdd(int index) {
         if (index > size || index < 0) {
-            throw new IndexOutOfBoundsException("Index " + index + " out of bounds for length " + size);
+            throw new IndexOutOfBoundsException("Index must be between 0 and " + size);
         }
     }
 }
